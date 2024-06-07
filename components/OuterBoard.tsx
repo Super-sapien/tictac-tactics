@@ -75,7 +75,7 @@ import calculateWinner from "@/middleware/CalculateWinner";
 export default function OuterBoard() {
     const [boards, setBoards] = useState(Array(9).fill(null));
     const [xIsNext, setXIsNext] = useState(true);
-    const [activeBoard, setActiveBoard] = useState(null);
+    const [activeBoard, setActiveBoard] = useState<number | null>(null);
 
     // calculateWinner(boards);
     // function calculateWinner(boards: any[]) {
