@@ -113,17 +113,6 @@ h1 {
   padding: 20%;
 }
 
-@media screen and (max-width: 900px) {
-  .inner-board, .winner-board {
-    max-width: 126px;
-    max-height: 126px;
-  }
-  .square {
-    max-height: 42px;
-    max-width: 42px;
-  }
-}
-
 .board-row:after {
   clear: both;
   content: "";
@@ -136,7 +125,51 @@ h1 {
   font-weight: bold;
 }
 
-
 .inner-board.disabled {
   opacity: 0.5;
+}
+
+
+@media screen and (max-width: 900px) {
+  .inner-board, .winner-board {
+    max-width: 126px;
+    max-height: 126px;
+  }
+  .square {
+    max-height: 42px;
+    max-width: 42px;
+  }
+}
+
+@media screen and (max-width: 430px) {
+  .inner-board, .winner-board {
+    max-width: 102px;
+    max-height: 102px;
+  }
+  .square {
+    max-height: 34px;
+    max-width: 34px;
+  }
+}
+
+@media screen and (max-width: 340px) {
+  .inner-board, .winner-board {
+    max-width: 90px;
+    max-height: 90px;
+  }
+  .square {
+    max-height: 30px;
+    max-width: 30px;
+  }
+}
+
+@media screen and (max-width: 290px) {
+  .inner-board, .winner-board {
+    max-width: 75px;
+    max-height: 75px;
+  }
+  .square {
+    max-height: 25px;
+    max-width: 25px;
+  }
 }

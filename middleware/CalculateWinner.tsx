@@ -1,5 +1,5 @@
-
-export default function calculateWinner(boards: any[]) {
+// Checks for matching values for 3 squares in a row in the board array and returns the winner of that board.
+export default function calculateWinner(points: any[]) {
     const lines = [
         [0, 1, 2],
         [3, 4, 5],
@@ -12,9 +12,10 @@ export default function calculateWinner(boards: any[]) {
     ];
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
-        if (boards[a] && boards[a] === boards[b] && boards[a] === boards[c]) {
-            return boards[a];
+        if (points[a] && points[a] === points[b] && points[a] === points[c]) {
+            return points[a];
         }
     }
+    // If no winner found, return null.
     return null;
 }

@@ -1,133 +1,77 @@
-// 'use client';
-//
-// import { useState } from 'react';
-// import InnerBoard from './InnerBoard';
-//
-//
-// export default function OuterBoard() {
-//     const [boards, setBoards] = useState(Array(9).fill(null));
-//     const [xIsNext, setXIsNext] = useState(true);
-//     const [activeBoard, setActiveBoard] = useState(null);
-//     const winner = calculateWinner(boards);
-//
-//     const handleInnerBoardClick = (boardIndex, squares) => {
-//         if (winner || (activeBoard !== null && activeBoard !== boardIndex)) return;
-//
-//         const newBoards = boards.slice();
-//         newBoards[boardIndex] = calculateWinner(squares) || null;
-//         setBoards(newBoards);
-//         setXIsNext(!xIsNext);
-//         setActiveBoard(squares[boardIndex] === null ? boardIndex : null);
-//     };
-//
-//     return (
-//         <div>
-//             <div className="status">
-//                 {winner ? `Winner: ${winner}` : `Next player: ${xIsNext ? 'X' : 'O'}`}
-//             </div>
-//             <div className="outer-board">
-//                 {boards.map((board, i) => (
-//                     <InnerBoard
-//                         key={i}
-//                         value={board}
-//                         onClick={(i, squares) => handleInnerBoardClick(i, squares)}
-//                         disabled={winner || (activeBoard !== null && activeBoard !== i)}
-//                     />
-//                 ))}
-//             </div>
-//         </div>
-//     );
-// }
-//
-// function calculateWinner(boards) {
-//     const lines = [
-//         [0, 1, 2],
-//         [3, 4, 5],
-//         [6, 7, 8],
-//         [0, 3, 6],
-//         [1, 4, 7],
-//         [2, 5, 8],
-//         [0, 4, 8],
-//         [2, 4, 6],
-//     ];
-//     for (let i = 0; i < lines.length; i++) {
-//         const [a, b, c] = lines[i];
-//         if (boards[a] && boards[a] === boards[b] && boards[a] === boards[c]) {
-//             return boards[a];
-//         }
-//     }
-//     return null;
-// }
-
 "use client";
 
 import { useState } from 'react';
 import InnerBoard from './InnerBoard';
 import calculateWinner from "@/middleware/CalculateWinner";
 
-// interface OuterBoardProps {
-//     activeBoard: number | null;
-// }
-
-// TODO: Fix the Game Status
-// TODO: Prevent game from disabling other boards when an innerBoard is won
 // TODO: Restart game function
 export default function OuterBoard() {
-    const [boards, setBoards] = useState(Array(9).fill(null));
-    const [xIsNext, setXIsNext] = useState(true);
+    // Nested array of 9 inner boards, each with 9 squares.
+    const [innerBoards, setInnerBoards] = useState(Array(9).fill(Array(9).fill(null)));
+
+    // boardsWon represents which player has won the innerBoard at the index of the Array.
+    const [boardsWon, setBoardsWon] = useState(Array(9).fill(null));
+
+    const [xIsNext, setXIsNext] = useState(true); // X starts game
+
+    // Start with all boards active, after click, set the active board to the index of the last clicked square,
+    // if the index of the last clicked square has been won, reactivate all other non-won boards.
     const [activeBoard, setActiveBoard] = useState<number | null>(null);
-
-    // calculateWinner(boards);
-    // function calculateWinner(boards: any[]) {
-    //     const lines = [
-    //         [0, 1, 2],
-    //         [3, 4, 5],
-    //         [6, 7, 8],
-    //         [0, 3, 6],
-    //         [1, 4, 7],
-    //         [2, 5, 8],
-    //         [0, 4, 8],
-    //         [2, 4, 6],
-    //     ];
-    //     for (let i = 0; i < lines.length; i++) {
-    //         const [a, b, c] = lines[i];
-    //         if (boards[a] && boards[a] === boards[b] && boards[a] === boards[c]) {
-    //             return boards[a];
-    //         }
-    //     }
-    //     return null;
-    // }
-
-    // const handleInnerBoardClick = (boardIndex: number, winner: any) => {
-    //     const newBoards = boards.slice();
-    //     newBoards[boardIndex] = winner;
-    //     setBoards(newBoards);
-    //     setXIsNext(!xIsNext);
-    // };
+    const [gameOver, setGameOver] = useState(false);
 
     const handleInnerBoardClick = (boardIndex: number, squareIndex: number) => {
-        const newBoards = boards.slice();
-        newBoards[boardIndex] = xIsNext ? 'X' : 'O';
-        setBoards(newBoards);
-        setXIsNext(!xIsNext);
-        setActiveBoard(squareIndex); // Set the active board to the index of the last clicked square
-    };
+        if (gameOver || boardsWon[boardIndex]) {
+            return;
+        }
+        // && (activeBoard !== null && activeBoard !== boardIndex)
 
-    const winner = calculateWinner(boards);
+        // Set the clicked square to X or O and update the innerBoards
+        const newInnerBoards = innerBoards.slice();
+        const newBoard = newInnerBoards[boardIndex].slice();
+        newBoard[squareIndex] = xIsNext ? 'X' : 'O';
+        newInnerBoards[boardIndex] = newBoard;
+        setInnerBoards(newInnerBoards);
+
+        // Check if the innerBoard has been won and update the boardsWon array
+        if (calculateWinner(newBoard)) {
+            const newBoardsWon = boardsWon.slice();
+            newBoardsWon[boardIndex] = xIsNext ? 'X' : 'O';
+            setBoardsWon(newBoardsWon);
+            setActiveBoard(null); // If the board at the outer index has been won, make all other boards active
+
+            // console.log('boards won', boardsWon);
+            // console.log('new boards won', newBoardsWon);
+            // Check if the game has been won
+            const winner = calculateWinner(newBoardsWon);
+            if (winner) {
+                setGameOver(true);
+            }
+            setXIsNext(!xIsNext);
+            return;
+        }
+
+        // Set up for next player
+        setXIsNext(!xIsNext);
+        if (boardsWon[squareIndex]) {
+            setActiveBoard(null); // If the board has been won, make all the boards active
+        } else {
+            setActiveBoard(squareIndex); // Otherwise, only make the board that the player is being sent to active
+        }
+        return;
+    };
 
     return (
         <div>
             <h1>TicTac TacTics</h1>
             <div className="status">
-                {winner ? `Winner: ${winner}` : `Next player: ${xIsNext ? 'X' : 'O'}`}
+                {gameOver ? `Game Over. Winner: ${xIsNext ? 'O' : 'X'}` : `Next player: ${xIsNext ? 'X' : 'O'}`}
             </div>
             <div className="outer-board">
-                {boards.map((board, i) => (
+                {innerBoards.map((board, i) => (
                     <InnerBoard
                         key={i}
                         value={board}
-                        onClick={(squareIndex) => handleInnerBoardClick(i, squareIndex)}
-                        xIsNext={xIsNext}
+                        move={(squareIndex) => handleInnerBoardClick(i, squareIndex)}
                         disabled={activeBoard !== null && i !== activeBoard} // All boards are disabled except the active one
                     />
                 ))}
