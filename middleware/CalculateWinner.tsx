@@ -12,7 +12,7 @@ export default function calculateWinner(points: any[]) {
     ];
     // Check for a tie.
     if (points.every((point) => point !== null)) {
-        return 'T';
+        return {winner: 'T', line: [] };
     }
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];

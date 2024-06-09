@@ -32,31 +32,12 @@ export default function OuterBoard(this: any) {
         newInnerBoards[boardIndex] = newBoard;
         setInnerBoards(newInnerBoards);
 
-        // // Check if the innerBoard has been won and update the boardsWon array
-        // if (calculateWinner(newBoard)) {
-        //     const newBoardsWon = boardsWon.slice();
-        //     newBoardsWon[boardIndex] = xIsNext ? 'X' : 'O';
-        //     setBoardsWon(newBoardsWon);
-        //     setActiveBoard(null); // If the board at the outer index has been won, make all other boards active
-        //
-        //     // console.log('boards won', boardsWon);
-        //     console.log('new boards won', newBoardsWon);
-        //     // Check if the game has been won
-        //     const winner = calculateWinner(newBoardsWon);
-        //     if (winner) {
-        //         console.log('winner', winner);
-        //         setGameOver(true);
-        //     }
-        //     setXIsNext(!xIsNext);
-        //     return;
-        // }
-
         // Check if the innerBoard has been won and update the boardsWon array
         const winner = calculateWinner(newBoard);
         const newBoardsWon = boardsWon.slice();
         console.log('new boards won', newBoardsWon);
         console.log('winner', winner);
-        if (winner === 'T') {
+        if (winner !== null && winner.winner === 'T') {
             newBoardsWon[boardIndex] = 'T';
         } else if (winner) {
             newBoardsWon[boardIndex] = xIsNext ? 'X' : 'O';
@@ -67,18 +48,18 @@ export default function OuterBoard(this: any) {
         // Check if the game has been won
         const gameWinner = calculateWinner(newBoardsWon);
         if (gameWinner) {
-            setGameOver(true);
-            if (gameWinner === 'T') {
+            if (gameWinner.winner === 'T') {
                 console.log('Tie game');
             }
-            if (gameWinner !== 'T') {
+            if (gameWinner.winner !== 'T') {
                 setWinningLine(gameWinner.line);
             }
+            setGameOver(true);
         }
 
         // Set up for next player
         setXIsNext(!xIsNext);
-        if (boardsWon[squareIndex]) {
+        if (newBoardsWon[squareIndex]) {
             setActiveBoard(null); // If the board has been won, make all the boards active
         } else {
             setActiveBoard(squareIndex); // Otherwise, only make the board that the player is being sent to active
@@ -108,7 +89,8 @@ export default function OuterBoard(this: any) {
                         value={board}
                         move={(squareIndex) => handleInnerBoardClick(i, squareIndex)}
                         disabled={activeBoard !== null && i !== activeBoard} // All boards are disabled except the active one
-                        className={winningLine && winningLine.includes(i) ? 'winning-row' : ''}
+                        className={gameOver && winningLine && winningLine.includes(i) ? 'winning-row' : ''} // Highlights row that won the game
+                        gameOver={gameOver}
                     />
                 ))}
             </div>

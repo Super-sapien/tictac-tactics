@@ -153,9 +153,7 @@ h1 {
   background: orange;
 }
 
-.winning-row {
-  background-color: orange;
-}
+
 
 @media screen and (max-width: 900px) {
   .inner-board, .winner-board {
@@ -209,4 +207,7 @@ h1 {
   }
 }
 
+.winning-row {
+  background: #c07f00;
+}
 

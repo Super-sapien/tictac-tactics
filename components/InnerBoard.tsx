@@ -6,10 +6,11 @@ interface InnerBoardProps {
     move: (squareIndex: number) => void,
     disabled: boolean,
     value: string[],
-    className?: string
+    className?: string,
+    gameOver: boolean
 }
 
-export default function InnerBoard({move, disabled, value, className}: InnerBoardProps) {
+export default function InnerBoard({move, disabled, value, className, gameOver}: InnerBoardProps) {
     const handleClick = (i: number) => {
         // if disabled or square already filled return (prevent the move)
         if (disabled || value[i]) {
@@ -23,15 +24,22 @@ export default function InnerBoard({move, disabled, value, className}: InnerBoar
     return (
         <>
             {
-                (winner === 'T') ?
-                    <WinnerBoard winner={'T'}/> :
-                (winner?.winner === 'X') ?
-                    <WinnerBoard winner={'X'}/> :
-                (winner?.winner === 'O') ?
-                        <WinnerBoard winner={'O'}/> :
+                (winner !== null) ?
+                    <WinnerBoard
+                        winner={winner.winner}
+                        className={gameOver ? className : undefined}
+                    />
+
+                    :
+
                     <div className={`inner-board ${disabled ? 'disabled' : ''}`}>
                         {value.map((square, i) => (
-                            <Square key={i} value={square} move={() => handleClick(i)}/>
+                            <Square
+                                key={i}
+                                value={square}
+                                move={() => handleClick(i)}
+
+                            />
                         ))}
                     </div>
             }
