@@ -4,7 +4,7 @@ import { useState } from 'react';
 import InnerBoard from './InnerBoard';
 import calculateWinner from "@/middleware/CalculateWinner";
 
-// TODO: Restart game function
+// TODO: Build AI to play against. Highlight AI's last move.
 export default function OuterBoard() {
     // Nested array of 9 inner boards, each with 9 squares.
     const [innerBoards, setInnerBoards] = useState(Array(9).fill(Array(9).fill(null)));
@@ -60,6 +60,14 @@ export default function OuterBoard() {
         return;
     };
 
+    const restartGame = () => {
+        setInnerBoards(Array(9).fill(Array(9).fill(null)));
+        setBoardsWon(Array(9).fill(null));
+        setXIsNext(true);
+        setActiveBoard(null);
+        setGameOver(false);
+    }
+
     return (
         <div>
             <h1>TicTac TacTics</h1>
@@ -76,6 +84,9 @@ export default function OuterBoard() {
                     />
                 ))}
             </div>
+        {gameOver &&
+            <button className="restartBtn" onClick={() => restartGame()}>Restart Game</button>
+        }
         </div>
     );
 }
