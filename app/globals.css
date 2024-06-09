@@ -137,7 +137,7 @@ h1 {
   opacity: 0.5;
 }
 
-.restartBtn {
+.restart-btn {
   position: absolute;
   background: #f9f9f9;
   border: 1px solid #999;
@@ -147,10 +147,14 @@ h1 {
   font-size: 16px;
   margin-top: 20px;
   padding: 10px 20px;
-  /*text-decoration: none;*/
 }
-.restartBtn:hover {
+
+.restart-btn:hover {
   background: orange;
+}
+
+.winning-row {
+  background-color: orange;
 }
 
 @media screen and (max-width: 900px) {
@@ -184,7 +188,7 @@ h1 {
     max-height: 30px;
     max-width: 30px;
   }
-  .restartBtn {
+  .restart-btn {
     font-size: 14px;
     padding: 5px 10px;
   }

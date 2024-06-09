@@ -10,10 +10,15 @@ export default function calculateWinner(points: any[]) {
         [0, 4, 8],
         [2, 4, 6],
     ];
+    // Check for a tie.
+    if (points.every((point) => point !== null)) {
+        return 'T';
+    }
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (points[a] && points[a] === points[b] && points[a] === points[c]) {
-            return points[a];
+            // return points[a];
+            return { winner: points[a], line: lines[i] };
         }
     }
     // If no winner found, return null.

@@ -5,7 +5,7 @@ import InnerBoard from './InnerBoard';
 import calculateWinner from "@/middleware/CalculateWinner";
 
 // TODO: Build AI to play against. Highlight AI's last move.
-export default function OuterBoard() {
+export default function OuterBoard(this: any) {
     // Nested array of 9 inner boards, each with 9 squares.
     const [innerBoards, setInnerBoards] = useState(Array(9).fill(Array(9).fill(null)));
 
@@ -18,12 +18,12 @@ export default function OuterBoard() {
     // if the index of the last clicked square has been won, reactivate all other non-won boards.
     const [activeBoard, setActiveBoard] = useState<number | null>(null);
     const [gameOver, setGameOver] = useState(false);
+    const [winningLine, setWinningLine] = useState<number[] | null>(null);
 
     const handleInnerBoardClick = (boardIndex: number, squareIndex: number) => {
         if (gameOver || boardsWon[boardIndex]) {
             return;
         }
-        // && (activeBoard !== null && activeBoard !== boardIndex)
 
         // Set the clicked square to X or O and update the innerBoards
         const newInnerBoards = innerBoards.slice();
@@ -32,22 +32,48 @@ export default function OuterBoard() {
         newInnerBoards[boardIndex] = newBoard;
         setInnerBoards(newInnerBoards);
 
-        // Check if the innerBoard has been won and update the boardsWon array
-        if (calculateWinner(newBoard)) {
-            const newBoardsWon = boardsWon.slice();
-            newBoardsWon[boardIndex] = xIsNext ? 'X' : 'O';
-            setBoardsWon(newBoardsWon);
-            setActiveBoard(null); // If the board at the outer index has been won, make all other boards active
+        // // Check if the innerBoard has been won and update the boardsWon array
+        // if (calculateWinner(newBoard)) {
+        //     const newBoardsWon = boardsWon.slice();
+        //     newBoardsWon[boardIndex] = xIsNext ? 'X' : 'O';
+        //     setBoardsWon(newBoardsWon);
+        //     setActiveBoard(null); // If the board at the outer index has been won, make all other boards active
+        //
+        //     // console.log('boards won', boardsWon);
+        //     console.log('new boards won', newBoardsWon);
+        //     // Check if the game has been won
+        //     const winner = calculateWinner(newBoardsWon);
+        //     if (winner) {
+        //         console.log('winner', winner);
+        //         setGameOver(true);
+        //     }
+        //     setXIsNext(!xIsNext);
+        //     return;
+        // }
 
-            // console.log('boards won', boardsWon);
-            // console.log('new boards won', newBoardsWon);
-            // Check if the game has been won
-            const winner = calculateWinner(newBoardsWon);
-            if (winner) {
-                setGameOver(true);
+        // Check if the innerBoard has been won and update the boardsWon array
+        const winner = calculateWinner(newBoard);
+        const newBoardsWon = boardsWon.slice();
+        console.log('new boards won', newBoardsWon);
+        console.log('winner', winner);
+        if (winner === 'T') {
+            newBoardsWon[boardIndex] = 'T';
+        } else if (winner) {
+            newBoardsWon[boardIndex] = xIsNext ? 'X' : 'O';
+        }
+        setBoardsWon(newBoardsWon);
+        setActiveBoard(null); // If the board at the outer index has been won, make all other boards active
+
+        // Check if the game has been won
+        const gameWinner = calculateWinner(newBoardsWon);
+        if (gameWinner) {
+            setGameOver(true);
+            if (gameWinner === 'T') {
+                console.log('Tie game');
             }
-            setXIsNext(!xIsNext);
-            return;
+            if (gameWinner !== 'T') {
+                setWinningLine(gameWinner.line);
+            }
         }
 
         // Set up for next player
@@ -72,7 +98,8 @@ export default function OuterBoard() {
         <div>
             <h1>TicTac TacTics</h1>
             <div className="status">
-                {gameOver ? `Game Over. Winner: ${xIsNext ? 'O' : 'X'}` : `Next player: ${xIsNext ? 'X' : 'O'}`}
+                {gameOver ? `Game Over` : `Next player: ${xIsNext ? 'X' : 'O'}`}
+            {/*    . Winner: ${xIsNext ? 'O' : 'X'}` */}
             </div>
             <div className="outer-board">
                 {innerBoards.map((board, i) => (
@@ -81,11 +108,12 @@ export default function OuterBoard() {
                         value={board}
                         move={(squareIndex) => handleInnerBoardClick(i, squareIndex)}
                         disabled={activeBoard !== null && i !== activeBoard} // All boards are disabled except the active one
+                        className={winningLine && winningLine.includes(i) ? 'winning-row' : ''}
                     />
                 ))}
             </div>
         {gameOver &&
-            <button className="restartBtn" onClick={() => restartGame()}>Restart Game</button>
+            <button className="restart-btn" onClick={() => restartGame()}>Restart Game</button>
         }
         </div>
     );
