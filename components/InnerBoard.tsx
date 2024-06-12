@@ -7,10 +7,11 @@ interface InnerBoardProps {
     disabled: boolean,
     value: string[],
     className?: string,
-    gameOver: boolean
+    gameOver: boolean,
+    winner: { winner: 'X' | 'O' | 'T' } | null
 }
 
-export default function InnerBoard({move, disabled, value, className, gameOver}: InnerBoardProps) {
+export default function InnerBoard({move, disabled, value, className, gameOver, winner}: InnerBoardProps) {
     const handleClick = (i: number) => {
         // if disabled or square already filled return (prevent the move)
         if (disabled || value[i]) {
@@ -19,7 +20,7 @@ export default function InnerBoard({move, disabled, value, className, gameOver}:
         move(i); // make the move
     };
 
-    const winner = calculateWinner(value);
+    // const winner = calculateWinner(value);
 
     return (
         <>

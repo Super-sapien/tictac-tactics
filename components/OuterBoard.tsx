@@ -1,8 +1,11 @@
 "use client";
 
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import InnerBoard from './InnerBoard';
 import calculateWinner from "@/middleware/CalculateWinner";
+import bestMove from "@/middleware/Minimax";
+
+let MOVES = 0;
 
 // TODO: Build AI to play against. Highlight AI's last move.
 export default function OuterBoard(this: any) {
@@ -12,31 +15,45 @@ export default function OuterBoard(this: any) {
     // boardsWon represents which player has won the innerBoard at the index of the Array.
     const [boardsWon, setBoardsWon] = useState(Array(9).fill(null));
 
+    // Human plays as X, AI plays as O.
     const [xIsNext, setXIsNext] = useState(true); // X starts game
 
     // Start with all boards active, after click, set the active board to the index of the last clicked square,
     // if the index of the last clicked square has been won, reactivate all other non-won boards.
     const [activeBoard, setActiveBoard] = useState<number | null>(null);
+
     const [gameOver, setGameOver] = useState(false);
     const [winningLine, setWinningLine] = useState<number[] | null>(null);
 
+    // Check if the AI should make a move after every update to the game.
+    useEffect(() => {
+        // Only make the AI move when it's the AI's turn and the game is not over.
+        if (!xIsNext && !gameOver) {
+            makeAIMove();
+        }
+    }, [innerBoards, xIsNext, gameOver]);
+
     const handleInnerBoardClick = (boardIndex: number, squareIndex: number) => {
+        // If it's not the player's turn, return until the AI has made a move.
+        if (!xIsNext) {
+            return;
+        }
+        // If the game is over or the board has been won, return.
         if (gameOver || boardsWon[boardIndex]) {
             return;
         }
 
-        // Set the clicked square to X or O and update the innerBoards
+        // Set the clicked square to X or O and update the innerBoards.
         const newInnerBoards = innerBoards.slice();
         const newBoard = newInnerBoards[boardIndex].slice();
         newBoard[squareIndex] = xIsNext ? 'X' : 'O';
         newInnerBoards[boardIndex] = newBoard;
         setInnerBoards(newInnerBoards);
+        MOVES++;
 
         // Check if the innerBoard has been won and update the boardsWon array
         const winner = calculateWinner(newBoard);
         const newBoardsWon = boardsWon.slice();
-        console.log('new boards won', newBoardsWon);
-        console.log('winner', winner);
         if (winner !== null && winner.winner === 'T') {
             newBoardsWon[boardIndex] = 'T';
         } else if (winner) {
@@ -55,17 +72,80 @@ export default function OuterBoard(this: any) {
                 setWinningLine(gameWinner.line);
             }
             setGameOver(true);
+            return;
         }
 
-        // Set up for next player
-        setXIsNext(!xIsNext);
+        // Set up for next player.
         if (newBoardsWon[squareIndex]) {
             setActiveBoard(null); // If the board has been won, make all the boards active
         } else {
             setActiveBoard(squareIndex); // Otherwise, only make the board that the player is being sent to active
         }
+        setXIsNext(!xIsNext);
         return;
     };
+
+    const makeAIMove = () => {
+        // If the middle square is available in the early game, take it.
+        if (MOVES <= 2 && activeBoard !== null) {
+            if (innerBoards[activeBoard][4] == null) {
+                let newInnerBoards = innerBoards.slice();
+                let newBoard = newInnerBoards[activeBoard].slice();
+                newBoard[4] = 'O';
+                newInnerBoards[activeBoard] = newBoard;
+                setInnerBoards(newInnerBoards);
+                MOVES++;
+                setBoardsWon(boardsWon);
+                setActiveBoard(4);
+                setXIsNext(true);
+                return;
+            }
+        }
+
+        // Get the best move from the AI.
+        let bestMoveIndex = bestMove(activeBoard, innerBoards, boardsWon);
+        console.log('best move index', bestMoveIndex);
+        let newInnerBoards = innerBoards.slice();
+        let newBoard = newInnerBoards[bestMoveIndex.i].slice();
+        newBoard[bestMoveIndex.j] = 'O';
+        newInnerBoards[bestMoveIndex.i] = newBoard;
+        setInnerBoards(newInnerBoards);
+        MOVES++;
+        // console.log('new inner boards after ai move', newInnerBoards);
+
+        // Check if the innerBoard has been won and update the boardsWon array.
+        const winner = calculateWinner(newBoard);
+        const newBoardsWon = boardsWon.slice();
+        if (winner !== null && winner.winner === 'T') {
+            newBoardsWon[bestMoveIndex.i] = 'T';
+        } else if (winner) {
+            newBoardsWon[bestMoveIndex.i] = xIsNext ? 'X' : 'O';
+        }
+
+        // Check if the game has been won.
+        setBoardsWon(newBoardsWon);
+        setActiveBoard(null);
+        const gameWinner = calculateWinner(newBoardsWon);
+        if (gameWinner) {
+            if (gameWinner.winner === 'T') {
+                console.log('Tie game');
+            }
+            if (gameWinner.winner !== 'T') {
+                setWinningLine(gameWinner.line);
+            }
+            setGameOver(true);
+            return;
+        }
+
+        // Set up for next player.
+        if (newBoardsWon[bestMoveIndex.j]) {
+            setActiveBoard(null);
+        } else {
+            setActiveBoard(bestMoveIndex.j);
+        }
+        setXIsNext(true);
+        return;
+    }
 
     const restartGame = () => {
         setInnerBoards(Array(9).fill(Array(9).fill(null)));
@@ -73,6 +153,7 @@ export default function OuterBoard(this: any) {
         setXIsNext(true);
         setActiveBoard(null);
         setGameOver(false);
+        MOVES = 0;
     }
 
     return (
@@ -91,6 +172,7 @@ export default function OuterBoard(this: any) {
                         disabled={activeBoard !== null && i !== activeBoard} // All boards are disabled except the active one
                         className={gameOver && winningLine && winningLine.includes(i) ? 'winning-row' : ''} // Highlights row that won the game
                         gameOver={gameOver}
+                        winner={boardsWon[i] ? { winner: boardsWon[i] } : null}
                     />
                 ))}
             </div>
