@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react';
 import InnerBoard from './InnerBoard';
 import calculateWinner from "@/middleware/CalculateWinner";
 import bestMove from "@/middleware/Minimax";
+import { MCTS, GameNode } from "@/middleware/MonteCarlo";
 
 let MOVES = 0;
 
@@ -53,18 +54,31 @@ export default function OuterBoard(this: any) {
 
         // Check if the innerBoard has been won and update the boardsWon array
         const winner = calculateWinner(newBoard);
+        // const winner = calculateWinner({
+        //     innerBoards: newInnerBoards,
+        //     boardsWon: boardsWon,
+        //     activeBoard: activeBoard
+        // });
+
         const newBoardsWon = boardsWon.slice();
         if (winner !== null && winner.winner === 'T') {
             newBoardsWon[boardIndex] = 'T';
         } else if (winner) {
             newBoardsWon[boardIndex] = xIsNext ? 'X' : 'O';
         }
+
         setBoardsWon(newBoardsWon);
         setActiveBoard(null); // If the board at the outer index has been won, make all other boards active
 
         // Check if the game has been won
-        const gameWinner = calculateWinner(newBoardsWon);
+        const gameWinner = calculateWinner(newBoardsWon); // ,newBoardsWon[boardIndex] // is player
+        // const gameWinner = calculateWinner({
+        //     innerBoards: newInnerBoards,
+        //     boardsWon: newBoardsWon,
+        //     activeBoard: activeBoard
+        // });
         if (gameWinner) {
+            console.log('heey ya won')
             if (gameWinner.winner === 'T') {
                 console.log('Tie game');
             }
@@ -87,20 +101,20 @@ export default function OuterBoard(this: any) {
 
     const makeAIMove = () => {
         // If the middle square is available in the early game, take it.
-        if (MOVES <= 2 && activeBoard !== null) {
-            if (innerBoards[activeBoard][4] == null) {
-                let newInnerBoards = innerBoards.slice();
-                let newBoard = newInnerBoards[activeBoard].slice();
-                newBoard[4] = 'O';
-                newInnerBoards[activeBoard] = newBoard;
-                setInnerBoards(newInnerBoards);
-                MOVES++;
-                setBoardsWon(boardsWon);
-                setActiveBoard(4);
-                setXIsNext(true);
-                return;
-            }
-        }
+        // if (MOVES <= 2 && activeBoard !== null) {
+        //     if (innerBoards[activeBoard][4] == null) {
+        //         let newInnerBoards = innerBoards.slice();
+        //         let newBoard = newInnerBoards[activeBoard].slice();
+        //         newBoard[4] = 'O';
+        //         newInnerBoards[activeBoard] = newBoard;
+        //         setInnerBoards(newInnerBoards);
+        //         MOVES++;
+        //         setBoardsWon(boardsWon);
+        //         setActiveBoard(4);
+        //         setXIsNext(true);
+        //         return;
+        //     }
+        // }
 
         // Get the best move from the AI.
         let bestMoveIndex = bestMove(activeBoard, innerBoards, boardsWon);
@@ -146,6 +160,193 @@ export default function OuterBoard(this: any) {
         setXIsNext(true);
         return;
     }
+
+
+    // const makeAIMove = () => {
+    //     // Create a new GameNode with the current game state
+    //     const currentState = {
+    //         innerBoards: innerBoards,
+    //         boardsWon: boardsWon,
+    //         activeBoard: activeBoard
+    //     };
+    //     const rootNode = new GameNode(currentState);
+    //
+    //     // Run the MCTS algorithm and get the best move
+    //     const mcts = new MCTS(rootNode);
+    //     mcts.run();
+    //     const bestMove = mcts.getBestMove();
+    //
+    //     // Apply the best move to the game state
+    //     let newInnerBoards = innerBoards.slice();
+    //     let newBoard = newInnerBoards[bestMove.state.boardIndex].slice();
+    //     newBoard[bestMove.state.squareIndex] = 'O';
+    //     newInnerBoards[bestMove.state.boardIndex] = newBoard;
+    //     setInnerBoards(newInnerBoards);
+    //     MOVES++;
+    //
+    //     // Check if the innerBoard has been won and update the boardsWon array
+    //     const winner = calculateWinner(newBoard);
+    //     const newBoardsWon = boardsWon.slice();
+    //     if (winner !== null && winner.winner === 'T') {
+    //         newBoardsWon[bestMove.state.boardIndex] = 'T';
+    //     } else if (winner) {
+    //         newBoardsWon[bestMove.state.boardIndex] = 'O';
+    //     }
+    //
+    //     // Check if the game has been won
+    //     setBoardsWon(newBoardsWon);
+    //     setActiveBoard(null);
+    //     const gameWinner = calculateWinner(newBoardsWon);
+    //     if (gameWinner) {
+    //         if (gameWinner.winner === 'T') {
+    //             console.log('Tie game');
+    //         }
+    //         if (gameWinner.winner !== 'T') {
+    //             setWinningLine(gameWinner.line);
+    //         }
+    //         setGameOver(true);
+    //         return;
+    //     }
+    //
+    //     // Set up for next player
+    //     if (newBoardsWon[bestMove.state.squareIndex]) {
+    //         setActiveBoard(null);
+    //     } else {
+    //         setActiveBoard(bestMove.state.squareIndex);
+    //     }
+    //     setXIsNext(true);
+    //     return;
+    // }
+
+    // const makeAIMove = () => {
+    //     // Create a new GameNode with the current game state
+    //     const currentState = {
+    //         innerBoards: innerBoards,
+    //         boardsWon: boardsWon,
+    //         activeBoard: activeBoard
+    //     };
+    //     const rootNode = new GameNode(currentState);
+    //
+    //     // Run the MCTS algorithm and get the best move
+    //     const mcts = new MCTS(rootNode);
+    //     mcts.run();
+    //     let bestMove = mcts.getBestMove();
+    //
+    //     // Check if bestMove and bestMove.state are not undefined
+    //     if (bestMove && bestMove.state) {
+    //         // Apply the best move to the game state
+    //         // Check if bestMove.state.boardIndex is not undefined and is a valid index for newInnerBoards
+    //         if (bestMove.state.boardIndex !== undefined && bestMove.state.boardIndex < innerBoards.length) {
+    //             let newInnerBoards = innerBoards.slice();
+    //             let newBoard = newInnerBoards[bestMove.state.boardIndex].slice();
+    //             newBoard[bestMove.state.squareIndex] = 'O';
+    //             newInnerBoards[bestMove.state.boardIndex] = newBoard;
+    //             setInnerBoards(newInnerBoards);
+    //             MOVES++;
+    //
+    //             // Check if the innerBoard has been won and update the boardsWon array
+    //             const winner = calculateWinner(newBoard);
+    //             // const winner = calculateWinner({
+    //             //     innerBoards: newInnerBoards,
+    //             //     boardsWon: boardsWon,
+    //             //     activeBoard: activeBoard
+    //             // });
+    //             const newBoardsWon = boardsWon.slice();
+    //             if (winner !== null && winner.winner === 'T') {
+    //                 newBoardsWon[bestMove.state.boardIndex] = 'T';
+    //             } else if (winner) {
+    //                 newBoardsWon[bestMove.state.boardIndex] = 'O';
+    //             }
+    //
+    //             // Check if the game has been won
+    //             setBoardsWon(newBoardsWon);
+    //             setActiveBoard(null);
+    //             const gameWinner = calculateWinner(newBoardsWon);
+    //             // const gameWinner = calculateWinner({
+    //             //     innerBoards: newInnerBoards,
+    //             //     boardsWon: newBoardsWon,
+    //             //     activeBoard: activeBoard
+    //             // });
+    //             if (gameWinner) {
+    //                 if (gameWinner.winner === 'T') {
+    //                     console.log('Tie game');
+    //                 }
+    //                 if (gameWinner.winner !== 'T') {
+    //                     setWinningLine(gameWinner.line);
+    //                 }
+    //                 setGameOver(true);
+    //                 return;
+    //             }
+    //
+    //             // Set up for next player
+    //             if (newBoardsWon[bestMove.state.squareIndex]) {
+    //                 setActiveBoard(null);
+    //             } else {
+    //                 setActiveBoard(bestMove.state.squareIndex);
+    //             }
+    //             setXIsNext(true);
+    //             return;
+    //         } else {
+    //             // Handle the case where bestMove.state.boardIndex is undefined or out of bounds
+    //             console.error('Error: bestMove.state.boardIndex is undefined or out of bounds');
+    //             bestMove = mcts.getRandomMove()
+    //         }
+    //     } else {
+    //         // Handle the case where bestMove or bestMove.state is undefined
+    //         console.error('Error: bestMove or bestMove.state is undefined');
+    //         bestMove = mcts.getRandomMove();
+    //     }
+    //     let newInnerBoards = innerBoards.slice();
+    //     let newBoard = newInnerBoards[bestMove.state.boardIndex].slice();
+    //     newBoard[bestMove.state.squareIndex] = 'O';
+    //     newInnerBoards[bestMove.state.boardIndex] = newBoard;
+    //     setInnerBoards(newInnerBoards);
+    //     MOVES++;
+    //
+    //     // Check if the innerBoard has been won and update the boardsWon array
+    //     const winner = calculateWinner(newBoard);
+    //     // const winner = calculateWinner({
+    //     //     innerBoards: newInnerBoards,
+    //     //     boardsWon: boardsWon,
+    //     //     activeBoard: activeBoard
+    //     // });
+    //     const newBoardsWon = boardsWon.slice();
+    //     if (winner !== null && winner.winner === 'T') {
+    //         newBoardsWon[bestMove.state.boardIndex] = 'T';
+    //     } else if (winner) {
+    //         newBoardsWon[bestMove.state.boardIndex] = 'O';
+    //     }
+    //
+    //     // Check if the game has been won
+    //     setBoardsWon(newBoardsWon);
+    //     setActiveBoard(null);
+    //     const gameWinner = calculateWinner(newBoardsWon);
+    //     // const gameWinner = calculateWinner({
+    //     //     innerBoards: newInnerBoards,
+    //     //     boardsWon: newBoardsWon,
+    //     //     activeBoard: activeBoard
+    //     // });
+    //     if (gameWinner) {
+    //         if (gameWinner.winner === 'T') {
+    //             console.log('Tie game');
+    //         }
+    //         if (gameWinner.winner !== 'T') {
+    //             setWinningLine(gameWinner.line);
+    //         }
+    //         setGameOver(true);
+    //         return;
+    //     }
+    //
+    //     // Set up for next player
+    //     if (newBoardsWon[bestMove.state.squareIndex]) {
+    //         setActiveBoard(null);
+    //     } else {
+    //         setActiveBoard(bestMove.state.squareIndex);
+    //     }
+    //     setXIsNext(true);
+    //     return;
+    // }
+
 
     const restartGame = () => {
         setInnerBoards(Array(9).fill(Array(9).fill(null)));
