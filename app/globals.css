@@ -154,6 +154,26 @@ h1 {
 }
 
 
+.winning-row {
+  background: #c07f00;
+}
+
+.last-human-move {
+  border: 3px solid blue;
+}
+
+.last-board-won-human {
+  border: 3px solid blue;
+}
+
+.last-ai-move {
+  border: 3px solid red;
+}
+
+.last-board-won-AI {
+  border: 3px solid red;
+}
+
 
 @media screen and (max-width: 900px) {
   .inner-board, .winner-board {
@@ -207,7 +227,5 @@ h1 {
   }
 }
 
-.winning-row {
-  background: #c07f00;
-}
+
 

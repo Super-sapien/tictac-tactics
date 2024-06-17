@@ -4,12 +4,13 @@ import {useEffect, useState} from 'react';
 import InnerBoard from './InnerBoard';
 import calculateWinner from "@/middleware/CalculateWinner";
 import bestMove from "@/middleware/Minimax";
-import { MCTS, GameNode } from "@/middleware/MonteCarlo";
+// import { MCTS, GameNode } from "@/middleware/MonteCarlo";
 
 let MOVES = 0;
 
 // TODO: Build AI to play against. Highlight AI's last move.
-export default function OuterBoard(this: any) {
+// TODO: If the last move won a board, highlight the board.
+export default function OuterBoard() {
     // Nested array of 9 inner boards, each with 9 squares.
     const [innerBoards, setInnerBoards] = useState(Array(9).fill(Array(9).fill(null)));
 
@@ -18,6 +19,11 @@ export default function OuterBoard(this: any) {
 
     // Human plays as X, AI plays as O.
     const [xIsNext, setXIsNext] = useState(true); // X starts game
+
+    // Keep track of the last moves made.
+    const [lastHumanMove, setLastHumanMove] = useState<{i: number | null, j: number | null}>({ i: null, j: null });
+    const [lastAIMove, setLastAIMove] = useState<{i: number | null, j: number | null}>({ i: null, j: null });
+    const [lastBoardWon, setLastBoardWon] = useState<number | null>(null);
 
     // Start with all boards active, after click, set the active board to the index of the last clicked square,
     // if the index of the last clicked square has been won, reactivate all other non-won boards.
@@ -30,9 +36,9 @@ export default function OuterBoard(this: any) {
     useEffect(() => {
         // Only make the AI move when it's the AI's turn and the game is not over.
         if (!xIsNext && !gameOver) {
-            makeAIMove();
+            new Promise(resolve => setTimeout(resolve)).then(makeAIMove);
         }
-    }, [innerBoards, xIsNext, gameOver]);
+    }, [xIsNext]);
 
     const handleInnerBoardClick = (boardIndex: number, squareIndex: number) => {
         // If it's not the player's turn, return until the AI has made a move.
@@ -63,8 +69,10 @@ export default function OuterBoard(this: any) {
         const newBoardsWon = boardsWon.slice();
         if (winner !== null && winner.winner === 'T') {
             newBoardsWon[boardIndex] = 'T';
+            setLastBoardWon(boardIndex);
         } else if (winner) {
             newBoardsWon[boardIndex] = xIsNext ? 'X' : 'O';
+            setLastBoardWon(boardIndex);
         }
 
         setBoardsWon(newBoardsWon);
@@ -95,11 +103,15 @@ export default function OuterBoard(this: any) {
         } else {
             setActiveBoard(squareIndex); // Otherwise, only make the board that the player is being sent to active
         }
+        setLastHumanMove({i: boardIndex, j: squareIndex });
         setXIsNext(!xIsNext);
         return;
     };
 
     const makeAIMove = () => {
+        // setTimeout(() => {
+
+
         // If the middle square is available in the early game, take it.
         // if (MOVES <= 2 && activeBoard !== null) {
         //     if (innerBoards[activeBoard][4] == null) {
@@ -118,6 +130,7 @@ export default function OuterBoard(this: any) {
 
         // Get the best move from the AI.
         let bestMoveIndex = bestMove(activeBoard, innerBoards, boardsWon);
+        setLastAIMove(bestMoveIndex);
         console.log('best move index', bestMoveIndex);
         let newInnerBoards = innerBoards.slice();
         let newBoard = newInnerBoards[bestMoveIndex.i].slice();
@@ -132,8 +145,10 @@ export default function OuterBoard(this: any) {
         const newBoardsWon = boardsWon.slice();
         if (winner !== null && winner.winner === 'T') {
             newBoardsWon[bestMoveIndex.i] = 'T';
+            setLastBoardWon(bestMoveIndex.i);
         } else if (winner) {
             newBoardsWon[bestMoveIndex.i] = xIsNext ? 'X' : 'O';
+            setLastBoardWon(bestMoveIndex.i);
         }
 
         // Check if the game has been won.
@@ -159,6 +174,7 @@ export default function OuterBoard(this: any) {
         }
         setXIsNext(true);
         return;
+    // }, 0);
     }
 
 
@@ -353,6 +369,9 @@ export default function OuterBoard(this: any) {
         setBoardsWon(Array(9).fill(null));
         setXIsNext(true);
         setActiveBoard(null);
+        setWinningLine(null);
+        setLastAIMove({ i: null, j: null });
+        setLastHumanMove({ i: null, j: null });
         setGameOver(false);
         MOVES = 0;
     }
@@ -365,17 +384,23 @@ export default function OuterBoard(this: any) {
             {/*    . Winner: ${xIsNext ? 'O' : 'X'}` */}
             </div>
             <div className="outer-board">
-                {innerBoards.map((board, i) => (
-                    <InnerBoard
-                        key={i}
-                        value={board}
-                        move={(squareIndex) => handleInnerBoardClick(i, squareIndex)}
-                        disabled={activeBoard !== null && i !== activeBoard} // All boards are disabled except the active one
-                        className={gameOver && winningLine && winningLine.includes(i) ? 'winning-row' : ''} // Highlights row that won the game
-                        gameOver={gameOver}
-                        winner={boardsWon[i] ? { winner: boardsWon[i] } : null}
-                    />
-                ))}
+                {innerBoards.map((board, i) => {
+                    return (
+                        <InnerBoard
+                            key={i}
+                            value={board}
+                            move={(squareIndex) => handleInnerBoardClick(i, squareIndex)}
+                            disabled={activeBoard !== null && i !== activeBoard}
+                            className={`${gameOver && winningLine && winningLine.includes(i) ? 'winning-row' : ''}`}
+                            gameOver={gameOver}
+                            winner={boardsWon[i] ? { winner: boardsWon[i] } : null}
+                            lastAIMove={lastAIMove}
+                            lastHumanMove={lastHumanMove}
+                            outerIndex={i}
+                            lastBoardWon={lastBoardWon}
+                        />
+                    )
+                })}
             </div>
         {gameOver &&
             <button className="restart-btn" onClick={() => restartGame()}>Restart Game</button>

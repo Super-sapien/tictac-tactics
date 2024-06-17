@@ -4,7 +4,7 @@ import calculateWinner, {hasTwoInARow} from "@/middleware/CalculateWinner";
 
 // const memo: { [key: string]: number } = {};
 // const bestMoveMemo: { [key: string]: { i: number, j: number } } = {};
-const maxDepth = 3;
+const maxDepth = 1;
 
 // let openBoards = [null, null, null, null, null, null, null, null, null];
 // let lastBoards = [...openBoards];

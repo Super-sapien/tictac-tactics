@@ -1,7 +1,7 @@
 // Displays a square with an X or O, depending on the player who makes the first valid move on the square.
-export default function Square({ value, move }: any) {
+export default function Square({ value, move, className }: any) {
     return (
-        <button className={`square`} onClick={move}>
+        <button className={`${className} square`} onClick={move} >
             {value === 'X' && (
                 <svg viewBox="0 0 24 24" width="24" height="24">
                     <line x1="2" y1="2" x2="22" y2="22" stroke="black" strokeWidth="2" />
