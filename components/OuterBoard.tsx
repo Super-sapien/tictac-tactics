@@ -93,6 +93,7 @@ export default function OuterBoard() {
             if (gameWinner.winner !== 'T') {
                 setWinningLine(gameWinner.line);
             }
+            setLastHumanMove({ i: null, j: null });
             setGameOver(true);
             return;
         }
@@ -162,6 +163,7 @@ export default function OuterBoard() {
             if (gameWinner.winner !== 'T') {
                 setWinningLine(gameWinner.line);
             }
+            setLastAIMove({ i: null, j: null });
             setGameOver(true);
             return;
         }
