@@ -1,18 +1,17 @@
 "use client";
 
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import InnerBoard from '../InnerBoard';
 import calculateWinner from "@/middleware/CalculateWinner";
 import minimax from "@/middleware/UltimateAI";
 import classes from "@/components/ultimate/ultimate-mode.module.css";
+import { GameContext } from '@/middleware/GameContext';
 
 let MOVES = 0;
 
-type GameState = 'AI' | 'Online' | 'Local';
-
-// TODO: Complete Ultimate AI and Online play. Get the game state from the context.
+// TODO: Complete Ultimate AI and Online play.
 export default function OuterBoard(this: any) {
-    const gameState: GameState = 'Local';
+    const { opponentType, connectionType, isHost } = useContext(GameContext);
 
     // Nested array of 9 inner boards, each with 9 squares.
     const [innerBoards, setInnerBoards] = useState(Array(9).fill(Array(9).fill(null)));
@@ -45,7 +44,7 @@ export default function OuterBoard(this: any) {
 
     const handleInnerBoardClick = (boardIndex: number, squareIndex: number) => {
         // If it's not your turn, or gameState === 'AI' || gameState === 'Online', return.
-        if (((gameState as GameState) !== 'Local') && !xIsNext) {
+        if ((connectionType !== 'Local') && !xIsNext) {
             return;
         }
         if (gameOver || boardsWon[boardIndex]) {
@@ -106,7 +105,7 @@ export default function OuterBoard(this: any) {
     };
 
     const opponentMove = () => {
-        if (gameState === 'AI') {
+        if (opponentType === 'AI') {
             console.log('AI state');
             let bestMoveIndex = minimax(activeBoard, innerBoards, boardsWon);
             setLastOpponentMove(bestMoveIndex);
@@ -153,14 +152,21 @@ export default function OuterBoard(this: any) {
             setXIsNext(true);
             return;
             // }, 0);
-        }
-        if (gameState === 'Online') {
+        } // END OF AI BLOCK
+
+        // TODO: Implement online play
+        if (connectionType === 'Online') { // START OF ONLINE BLOCK
             console.log('Online state');
+            if (isHost) {
+                console.log('Host state');
+            } else {
+                console.log('Join state');
+            }
+            // TODO: Web Socket implementation -> Send move to server, receive move from server.
         }
-        if (gameState === 'Local') {
-            console.log('Local state, shouldn\'t need to do anything in here');
+        if (connectionType === 'Local') {
+            console.log('Local state, return and let the player make a move with handleInnerBoardClick');
         }
-        // else local, nothing to do here.
     }
 
     const restartGame = () => {
