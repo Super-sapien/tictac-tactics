@@ -10,8 +10,10 @@ import { GameContext } from '@/middleware/GameContext';
 let MOVES = 0;
 
 // TODO: Complete Ultimate AI and Online play.
+// TODO: Back to Dashboard button. Clear Dashboard selections on navigate.
 export default function OuterBoard(this: any) {
     const { opponentType, connectionType, isHost } = useContext(GameContext);
+    console.log('Opponent Type:', opponentType, 'Connection Type:', connectionType, 'Host:', isHost);
 
     // Nested array of 9 inner boards, each with 9 squares.
     const [innerBoards, setInnerBoards] = useState(Array(9).fill(Array(9).fill(null)));
@@ -44,9 +46,7 @@ export default function OuterBoard(this: any) {
 
     const handleInnerBoardClick = (boardIndex: number, squareIndex: number) => {
         // If it's not your turn, or gameState === 'AI' || gameState === 'Online', return.
-        if ((connectionType !== 'Local') && !xIsNext) {
-            return;
-        }
+        // if ((connectionType !== 'Local') && !xIsNext) {
         if (gameOver || boardsWon[boardIndex]) {
             return;
         }

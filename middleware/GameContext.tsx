@@ -10,6 +10,8 @@ interface GameContextType {
     setOpponentType: React.Dispatch<React.SetStateAction<string>>;
     setConnectionType: React.Dispatch<React.SetStateAction<string>>;
     setIsHost: React.Dispatch<React.SetStateAction<boolean>>;
+    gameStarted: boolean;
+    setGameStarted: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 // Create the context with the defined type
@@ -22,6 +24,8 @@ export const GameContext = React.createContext<GameContextType>({
     setOpponentType: () => {},
     setConnectionType: () => {},
     setIsHost: () => {},
+    gameStarted: false,
+    setGameStarted: () => {},
 });
 
 interface GameContextProviderProps {
@@ -33,11 +37,11 @@ export const GameContextProvider = ({ children }: GameContextProviderProps) => {
     const [opponentType, setOpponentType] = useState<string>('');
     const [connectionType, setConnectionType] = useState<string>('');
     const [isHost, setIsHost] = useState(false); // Add this line
-
+    const [gameStarted, setGameStarted] = useState(false);
 
     return (
         <GameContext.Provider value={{ gameType, setGameType, opponentType, setOpponentType, connectionType,
-            setConnectionType, isHost, setIsHost }}>
+            setConnectionType, isHost, setIsHost, gameStarted, setGameStarted }}>
             {children}
         </GameContext.Provider>
     );

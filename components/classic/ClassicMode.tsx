@@ -1,14 +1,18 @@
 "use client";
 
-import {useEffect, useState} from 'react';
+import {useContext, useEffect, useState} from 'react';
 import calculateWinner from "@/middleware/CalculateWinner";
 import Square from "@/components/Square";
 import minimax from "@/middleware/ClassicAI";
 import classes from "@/components/classic/classic-mode.module.css";
+import { GameContext } from '@/middleware/GameContext';
 
 let MOVES = 0;
 
 export default function ClassicMode(this: any) {
+    const { opponentType, connectionType, isHost } = useContext(GameContext);
+    console.log('Opponent Type:', opponentType, 'Connection Type:', connectionType, 'Host:', isHost);
+
     const [board, setBoard] = useState(Array(9).fill(null));
     const [xIsNext, setXIsNext] = useState(true);
     const [gameOver, setGameOver] = useState(false);

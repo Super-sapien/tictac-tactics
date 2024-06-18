@@ -5,7 +5,8 @@ import classes from '@/components/dashboard/dashboard.module.css';
 export default function Dashboard() {
     const { gameType, setGameType, opponentType,
         setOpponentType, connectionType, setConnectionType,
-        isHost, setIsHost } = useContext(GameContext);
+        isHost, setIsHost,
+        gameStarted, setGameStarted } = useContext(GameContext);
 
     const handleGameToggle = (toggleValue: string) => {
         setGameType(toggleValue);
@@ -42,53 +43,61 @@ export default function Dashboard() {
                 setGameType('Classic');
                 setOpponentType('AI');
                 setConnectionType('Local');
-                window.location.href = '/Classic';
+                // window.location.href = '/Classic';
+                setGameStarted(true);
                 break;
             case 'Ultimate-AI-Local':
                 setGameType('Ultimate');
                 setOpponentType('AI');
                 setConnectionType('Local');
-                window.location.href = '/Ultimate';
+                // window.location.href = '/Ultimate';
+                setGameStarted(true);
                 break;
             case 'Classic-Human-Online-Host':
                 setGameType('Classic');
                 setOpponentType('Human');
                 setConnectionType('Online');
                 setIsHost(true);
-                window.location.href = '/Classic';
+                // window.location.href = '/Classic';
+                setGameStarted(true);
                 break;
             case 'Classic-Human-Online-Join':
                 setGameType('Classic');
                 setOpponentType('Human');
                 setConnectionType('Online');
                 setIsHost(false);
-                window.location.href = '/Classic';
+                // window.location.href = '/Classic';
+                setGameStarted(true);
                 break;
             case 'Classic-Human-Local':
                 setGameType('Classic');
                 setOpponentType('Human');
                 setConnectionType('Local');
-                window.location.href = '/Classic';
+                // window.location.href = '/Classic';
+                setGameStarted(true);
                 break;
             case 'Ultimate-Human-Online-Host':
                 setGameType('Ultimate');
                 setOpponentType('Human');
                 setConnectionType('Online');
                 setIsHost(true);
-                window.location.href = '/Ultimate';
+                // window.location.href = '/Ultimate';
+                setGameStarted(true);
                 break;
             case 'Ultimate-Human-Online-Join':
                 setGameType('Ultimate');
                 setOpponentType('Human');
                 setConnectionType('Online');
                 setIsHost(false);
-                window.location.href = '/Ultimate';
+                // window.location.href = '/Ultimate';
+                setGameStarted(true);
                 break;
             case 'Ultimate-Human-Local':
                 setGameType('Ultimate');
                 setOpponentType('Human');
                 setConnectionType('Local');
-                window.location.href = '/Ultimate';
+                // window.location.href = '/Ultimate';
+                setGameStarted(true);
                 break;
             default:
                 // TODO: Handle any errors
