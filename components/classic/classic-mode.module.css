@@ -1,0 +1,82 @@
+.innerBoardClassic {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    width: 36rem;
+    height: 36rem;
+    margin: 0 auto;
+}
+
+.restartBtn {
+    position: absolute;
+    background: #f9f9f9;
+    border: 1px solid #999;
+    border-radius: 5px;
+    color: #333;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 20px;
+    padding: 10px 20px;
+}
+
+.restartBtn:hover {
+    background: orange;
+}
+
+.winningRow {
+    border: 13px solid #c07f00;
+}
+
+.lastYourMove::after {
+    border: 4px solid blue;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 255, 0.3);
+}
+
+.lastOpponentMove::after {
+    border: 4px solid red;
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 0, 0, 0.3);
+}
+
+@media screen and (max-width: 750px) {
+    .innerBoardClassic {
+        width: 24rem;
+        height: 24rem;
+        gap: 0.6rem;
+    }
+}
+
+@media screen and (max-width: 475px) {
+    .innerBoardClassic {
+        max-width: 15rem;
+        max-height: 15rem;
+        gap: 0.5rem;
+    }
+}
+
+@media screen and (max-width: 340px) {
+    .innerBoardClassic {
+        max-width: 12rem;
+        max-height: 12rem;
+        gap: 0.4rem;
+    }
+}
+
+@media screen and (max-width: 290px) {
+    .innerBoardClassic {
+        max-width: 9rem;
+        max-height: 9rem;
+        gap: 0.3rem;
+    }
+}

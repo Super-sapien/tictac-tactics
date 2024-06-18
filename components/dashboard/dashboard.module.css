@@ -1,0 +1,98 @@
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    align-items: center;
+    max-width: 500px;
+}
+
+.description {
+    text-align: left;
+    font-size: 1rem;
+    color: orange;
+    margin: auto 0 auto 0.5rem;
+}
+
+/* Hide the default radio input */
+.radioButtonInput {
+    display: none;
+}
+
+/* Style the label to look like a button */
+.radioButtonLabel {
+    width: 6rem;
+    text-align: center;
+    padding: 0.5rem;
+    margin: 0.5rem;
+    background-color: rgba(255, 165, 0, 0.05);
+    border: 1px solid orange;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.radioButtonLabel:hover {
+    background-color: rgba(190, 126, 1, 0.6);
+}
+
+/* Change the background color when the radio input is selected */
+.radioButtonInput:checked + .radioButtonLabel {
+    background-color: rgba(190, 126, 1, 0.5);
+}
+
+.radioButtonInput:disabled + .radioButtonLabel {
+    color: grey;
+    background-color: rgba(128, 128, 128, 0.25);
+    cursor: not-allowed;
+    border-color: grey;
+}
+
+.startButton button {
+    position: relative;
+    box-sizing: border-box;
+    margin: 6rem auto auto auto;
+    text-align: center;
+    width: 225px;
+    padding: 10px;
+    background-color: #000000;
+    border: 1px solid orange;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/*.startButton {*/
+/*    position: absolute;*/
+/*    bottom: 50vh;*/
+/*    margin: 6rem auto auto auto;*/
+/*    text-align: center;*/
+/*    width: 225px;*/
+/*    padding: 10px;*/
+/*    background-color: #000000;*/
+/*    border: 1px solid orange;*/
+/*    border-radius: 0.5rem;*/
+/*    cursor: pointer;*/
+/*    transition: background-color 0.3s ease;*/
+/*}*/
+.buttonRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Desktop 3 column menu, mobile 2 column (1fr for label, 1fr 1fr for buttons) */
+@media screen and (max-width: 430px) {
+    .row {
+        grid-template-columns: 1fr;
+    }
+
+    .description {
+        text-align: left;
+        margin-top: 1rem;
+        margin-bottom: -1rem;
+    }
+
+    .startButton {
+        margin: 2.5rem auto 0 auto;
+    }
+}

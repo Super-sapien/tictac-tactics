@@ -1,0 +1,131 @@
+/* CLASSIC MODE */
+
+.squareClassic {
+    background: #fff;
+    border: 2px solid #999;
+    position: relative;
+    width: 11.2rem;
+    height: 11.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /*background: lightyellow;*/
+}
+
+.squareClassic svg {
+    width: 6rem;
+    height: 6rem;
+}
+
+/* ULTIMATE MODE */
+
+.squareUltimate {
+    background: #fff;
+    border: 2px solid #999;
+    position: relative;
+    width: 4rem;
+    height: 4rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.squareUltimate svg {
+    width: 2.25rem;
+    height: 2.25rem;
+}
+
+/* GLOBAL */
+
+.restartBtn {
+    position: relative;
+    background: #f9f9f9;
+    border: 1px solid #999;
+    border-radius: 5px;
+    color: #333;
+    display: inline-block;
+    font-size: 16px;
+    margin-top: 20px;
+    padding: 10px 20px;
+}
+
+.restartBtn:hover {
+    background: orange;
+}
+
+.winningRow {
+    border: 13px solid #c07f00;
+
+}
+
+@media screen and (max-width: 750px) {
+    .squareUltimate {
+        width: 3rem;
+        height: 3rem;
+    }
+    .squareUltimate svg {
+        width: 1.75rem;
+        height: 1.75rem;
+        /*width: 65%;*/
+        /*height: 65%;*/
+    }
+    .squareClassic {
+        width: 7.5rem;
+        height: 7.5rem;
+    }
+    .squareClassic svg {
+        width: 5rem;
+        height: 5rem;
+    }
+}
+@media screen and (max-width: 550px) {
+    .squareUltimate {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+    .squareUltimate svg {
+        width: 1.5rem;
+        height: 1.5rem;
+    }
+}
+
+@media screen and (max-width: 475px) {
+    .squareUltimate {
+        width: 2.3rem;
+        height: 2.3rem;
+    }
+    .squareUltimate svg {
+        width: 1.25rem;
+        height: 1.25rem;
+    }
+    .squareClassic {
+        width: 4.5rem;
+        height: 4.5rem;
+    }
+    .squareClassic svg {
+        width: 3rem;
+        height: 3rem;
+    }
+}
+
+@media screen and (max-width: 400px) {
+    .squareUltimate {
+        width: 2rem;
+        height: 2rem;
+    }
+    .squareUltimate svg {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+
+@media screen and (max-width: 340px) {
+    .squareClassic {
+        width: 3.75rem;
+        height: 3.75rem;
+    }
+    .squareClassic svg {
+        width: 2.5rem;
+        height: 2.5rem;
+    }
+}

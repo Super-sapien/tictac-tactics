@@ -8,6 +8,12 @@
 /*  --background-end-rgb: 255, 255, 255;*/
 /*}*/
 
+/*html, body {*/
+/*  height: 100%;*/
+/*  !*overflow: hidden;*!*/
+/*}*/
+
+
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
@@ -44,45 +50,41 @@ main {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  /*width: 100vw;*/
+  /*height: 100vh;*/
 }
 
 h1 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
   color: orange;
 }
 
-.square {
-  background: #fff;
-  border: 1px solid #999;
-  /*float: left;*/
-  font-size: 24px;
-  font-weight: bold;
-  /*line-height: 64px;*/
-  height: 64px;
-  /*margin-right: -1px;*/
-  /*margin-top: -1px;*/
-  /*padding: 0;*/
-  text-align: center;
-  width: 64px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+/*.square {*/
+/*  background: #fff;*/
+/*  border: 1px solid #999;*/
+/*  !*float: left;*!*/
+/*  font-size: 24px;*/
+/*  font-weight: bold;*/
+/*  !*line-height: 64px;*!*/
+/*  height: 64px;*/
+/*  !*margin-right: -1px;*!*/
+/*  !*margin-top: -1px;*!*/
+/*  !*padding: 0;*!*/
+/*  text-align: center;*/
+/*  width: 64px;*/
+/*  display: flex;*/
+/*  align-items: center;*/
+/*  justify-content: center;*/
+/*}*/
 
-.square svg {
-  width: 28px;
-  height: 28px;
-/*  24? */
-}
+/*.square svg {*/
+/*  width: 28px;*/
+/*  height: 28px;*/
+/*!*  24? *!*/
+/*}*/
 
-.outer-board {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2px;
-  border: 1px solid white;
-}
 
 .inner-board {
   /*position: relative;*/
@@ -96,118 +98,69 @@ h1 {
   justify-content: center;
 }
 
-.winner-char {
-  max-width: 192px;
-  max-height: 192px;
-  width: 100%;
-  height: 100%;
-}
-
-.winner-char svg {
-  position: relative;
-  /*max-width: 192px;*/
-  /*max-height: 192px;*/
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 80%;
-  height: 80%;
-}
-
-.winner-board {
-  height: 192px;
-  width: 192px;
-  border: orange 1px solid;
-  padding: 20%;
-}
-
-.board-row:after {
-  clear: both;
-  content: "";
-  display: table;
-}
-
 .status {
   margin-bottom: 20px;
   font-size: 16px;
   font-weight: bold;
+  text-align: center;
 }
 
-.inner-board.disabled {
-  opacity: 0.5;
-}
+/*.restart-btn {*/
+/*  position: absolute;*/
+/*  background: #f9f9f9;*/
+/*  border: 1px solid #999;*/
+/*  border-radius: 5px;*/
+/*  color: #333;*/
+/*  display: inline-block;*/
+/*  font-size: 16px;*/
+/*  margin-top: 20px;*/
+/*  padding: 10px 20px;*/
+/*}*/
 
-.restart-btn {
-  position: absolute;
-  background: #f9f9f9;
-  border: 1px solid #999;
-  border-radius: 5px;
-  color: #333;
-  display: inline-block;
-  font-size: 16px;
-  margin-top: 20px;
-  padding: 10px 20px;
-}
+/*.restart-btn:hover {*/
+/*  background: orange;*/
+/*}*/
 
-.restart-btn:hover {
-  background: orange;
-}
+/*.menu-screen {*/
+  /*display: flex;*/
+  /*justify-content: space-between;*/
+  /*flex-wrap: wrap;*/
+  /*padding: 0 10px;*/
+  /*max-width: 500px;*/
+  /*margin: 0 auto 20px;*/
+/*}*/
 
+/*.menu-button {*/
+/*  flex: 1 0 auto;*/
+/*  margin: 0.45rem;*/
+/*  padding: 0.45rem;*/
+/*  box-sizing: border-box;*/
+/*  text-align: center;*/
+/*  border: 1px solid orange;*/
+/*  border-radius: 0.5rem;*/
+/*}*/
 
+/*.menu-button:hover {*/
+/*    background: rgba(255, 165, 0, 0.5);*/
+/*    color: white;*/
+/*}*/
 
-@media screen and (max-width: 900px) {
-  .inner-board, .winner-board {
-    max-width: 126px;
-    max-height: 126px;
-  }
-  .square {
-    max-height: 42px;
-    max-width: 42px;
-  }
-}
+/*.winning-row {*/
+/*  background: #c07f00;*/
+/*}*/
 
-@media screen and (max-width: 430px) {
-  .inner-board, .winner-board {
-    max-width: 102px;
-    max-height: 102px;
-  }
-  .square {
-    max-height: 34px;
-    max-width: 34px;
-  }
-}
+/*.last-your-move {*/
+/*  border: 3px solid blue;*/
+/*}*/
 
-@media screen and (max-width: 340px) {
-  .inner-board, .winner-board {
-    max-width: 90px;
-    max-height: 90px;
-  }
-  .square {
-    max-height: 30px;
-    max-width: 30px;
-  }
-  .restart-btn {
-    font-size: 14px;
-    padding: 5px 10px;
-  }
-  .h1 {
-    font-size: 1.5rem;
-    margin-bottom: 0.25rem;
-  }
-}
+/*.last-board-won-you {*/
+/*  border: 3px solid blue;*/
+/*}*/
 
-@media screen and (max-width: 290px) {
-  .inner-board, .winner-board {
-    max-width: 75px;
-    max-height: 75px;
-  }
-  .square {
-    max-height: 25px;
-    max-width: 25px;
-  }
-}
+/*.last-opponent-move {*/
+/*  border: 3px solid red;*/
+/*}*/
 
-.winning-row {
-  background: #c07f00;
-}
-
+/*.last-board-won-opponent {*/
+/*  border: 3px solid red;*/
+/*}*/
